@@ -1,32 +1,171 @@
-# Prerequisites
-*.d
+int hiz1;
+int hiz2;
+int h3;
+ int ch1hiz;
+ int ch2hiz;
+ int ch3hiz;
+int ayar1;
+int ayar2;
+ int ch1;
+ int ch2;
+ int ch3;
+  //sag taraftaki ve sol taraftaki driverlarin ileri geri pinlerini buraya girin
+  int sol1Motori=10;
+  int sol1Motorg=11;
+ 
+  int sag1Motori=8;
+  int sag1Motorg=9;
+ 
+void setup() {
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+  pinMode(12, INPUT); // Set our input pins as such
+  pinMode(13, INPUT);
+  pinMode(4, INPUT);
+  pinMode(sag1Motori,OUTPUT);
+  pinMode(sag1Motorg,OUTPUT);
+  pinMode(sol1Motori,OUTPUT);
+  pinMode(sol1Motorg,OUTPUT);
 
-# Precompiled Headers
-*.gch
-*.pch
+  pinMode(27,OUTPUT);
+  pinMode(29,OUTPUT);
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+  digitalWrite(27,HIGH);
+  digitalWrite(29,HIGH);
+  Serial.begin(9600); // Pour a bowl of Serial
 
-# Fortran module files
-*.mod
-*.smod
+}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+void loop() {
 
-# Executables
-*.exe
-*.out
-*.app
+
+  ch1 = pulseIn(12, HIGH, 25000); // Read the pulse width of 
+  ch2 = pulseIn(13, HIGH, 25000); // each channel
+  ch3 = pulseIn(4, HIGH, 25000);// throttle
+  Serial.println(ch3);
+//  Serial.println(ch1);
+//  Serial.println(ch2);
+  //Serial.print("Channel 1:"); // Print the value of 
+  //Serial.println(ch1);//SAĞ-SOL
+
+  //Serial.print("Channel 2:");
+  //Serial.println(ch2); // İLERİ-GERİ
+
+   
+  ch1hiz =map(ch1,1000,1900,0,255);
+  ch2hiz =map(ch2,1000,1900,0,255);
+  ch3hiz =map(ch3,1000,1900,1,5);
+  ch3hiz=6-ch3hiz;
+  hareket(ch1hiz,ch2hiz,ch3hiz);
+
+
+ 
+}
+//yon functionlari
+int hareket(int h1, int h2, int h4){//h1 sag sol, h2 ileri geri
+
+if (h2>140){//ileri
+ ayar1=map(h2,140,255,0,255);
+
+ if (h1>140){//sag ileri
+  ayar2=map(h1,0,255,0,128);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,h3/h4);
+  analogWrite(sol1Motori,ayar1/h4);
+  analogWrite(sag1Motorg,0);
+  analogWrite(sol1Motorg,0);
+//  Serial.println(ayar1);  
+  }
+ 
+ else if (h1<90){//sol ileri
+  ayar2=map(255-h1,0,255,0,128);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,ayar1/h4);
+  analogWrite(sol1Motori,h3/h4);
+  analogWrite(sag1Motorg,0);
+  analogWrite(sol1Motorg,0);
+//  Serial.println(ayar1);   
+  }
+ 
+ else {
+  analogWrite(sag1Motori,ayar1/h4);
+  analogWrite(sol1Motori,ayar1/h4);
+  analogWrite(sag1Motorg,0);
+  analogWrite(sol1Motorg,0);
+//  Serial.println(ayar1);  
+  }
+ }
+
+
+ else if (h2<90){//geri
+  ayar1=map(255-h2,140,255,0,255);
+  if (h1>140){//sag geri
+  ayar2=map(h1,0,255,0,128);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,0);
+  analogWrite(sol1Motori,0);
+  analogWrite(sag1Motorg,ayar1/h4);
+  analogWrite(sol1Motorg,h3/h4);
+//  Serial.println(ayar1);  
+  }
+  else if (h1<90){//sol geri
+  ayar2=map(255-h1,0,255,0,128);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,0);
+  analogWrite(sol1Motori,0);
+  analogWrite(sag1Motorg,h3/h4);
+  analogWrite(sol1Motorg,ayar1/h4);
+//  Serial.println(ayar1);   
+  }
+  else {
+  analogWrite(sag1Motori,0);
+  analogWrite(sol1Motori,0);
+  analogWrite(sag1Motorg,ayar1/h4);
+  analogWrite(sol1Motorg,ayar1/h4);
+//  Serial.println(ayar1);  
+  }
+ }
+  else if(h2>90&&h2<140&&h1>140){//sag
+  ayar2=map(h1,140,255,0,255);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,ayar2/h4);
+  analogWrite(sol1Motori,0);
+  analogWrite(sag1Motorg,0);
+  analogWrite(sol1Motorg,ayar2/h4); 
+  }
+  else if(h2>90&&h2<140&&h1<90){//sol
+  ayar2=map(255-h1,140,255,0,255);
+  h3=ayar2+ayar1;
+  if (h3>255){
+    h3=255;
+  }
+  analogWrite(sag1Motori,0);
+  analogWrite(sol1Motori,ayar2/h4);
+  analogWrite(sag1Motorg,ayar2/h4);
+  analogWrite(sol1Motorg,0);   
+  }
+
+
+
+ else{
+ analogWrite(sag1Motori,0);
+ analogWrite(sol1Motori,0);
+ analogWrite(sag1Motorg,0);
+ analogWrite(sol1Motorg,0);
+// Serial.println("dur"); 
+}
+}
