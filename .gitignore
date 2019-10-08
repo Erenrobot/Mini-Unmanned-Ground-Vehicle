@@ -1,6 +1,16 @@
-int hiz1;
-int hiz2;
-int h3;
+/*
+Using High Current DC motors with arduino
+Using Radiolink at10(1.5 km range radio control module) on it
+2 dimensions Joystick control high maneuverability
+Can change sensitivity with throttle
+
+Writed at 2018 may.
+Writer Eren Sadikoglu
+*/
+
+int hiz1; //speed value 1
+int hiz2; //speed value 2
+int h3;   // sensitivity
  int ch1hiz;
  int ch2hiz;
  int ch3hiz;
@@ -9,18 +19,18 @@ int ayar2;
  int ch1;
  int ch2;
  int ch3;
-  //sag taraftaki ve sol taraftaki driverlarin ileri geri pinlerini buraya girin
-  int sol1Motori=10;
-  int sol1Motorg=11;
+  
+  int sol1Motori=10; //left motor forward
+  int sol1Motorg=11; //left motor backward
  
-  int sag1Motori=8;
-  int sag1Motorg=9;
+  int sag1Motori=8; //Right motor forward
+  int sag1Motorg=9; //Right motor backward
  
 void setup() {
 
   pinMode(12, INPUT); // Set our input pins as such
-  pinMode(13, INPUT);
-  pinMode(4, INPUT);
+  pinMode(13, INPUT); // Set our input pins as such
+  pinMode(4, INPUT);  // Set our input pins as such
   pinMode(sag1Motori,OUTPUT);
   pinMode(sag1Motorg,OUTPUT);
   pinMode(sol1Motori,OUTPUT);
@@ -31,7 +41,7 @@ void setup() {
 
   digitalWrite(27,HIGH);
   digitalWrite(29,HIGH);
-  Serial.begin(9600); // Pour a bowl of Serial
+  Serial.begin(9600); 
 
 }
 
@@ -45,13 +55,13 @@ void loop() {
 //  Serial.println(ch1);
 //  Serial.println(ch2);
   //Serial.print("Channel 1:"); // Print the value of 
-  //Serial.println(ch1);//SAĞ-SOL
+  //Serial.println(ch1);//Right-Left
 
   //Serial.print("Channel 2:");
-  //Serial.println(ch2); // İLERİ-GERİ
+  //Serial.println(ch2); // forward-backward
 
    
-  ch1hiz =map(ch1,1000,1900,0,255);
+  ch1hiz =map(ch1,1000,1900,0,255); // PWM to PWM changing value to 0-255
   ch2hiz =map(ch2,1000,1900,0,255);
   ch3hiz =map(ch3,1000,1900,1,5);
   ch3hiz=6-ch3hiz;
@@ -60,8 +70,8 @@ void loop() {
 
  
 }
-//yon functionlari
-int hareket(int h1, int h2, int h4){//h1 sag sol, h2 ileri geri
+//motion functions
+int hareket(int h1, int h2, int h4){//h1 right left, h2 forward backward
 
 if (h2>140){//ileri
  ayar1=map(h2,140,255,0,255);
@@ -102,7 +112,7 @@ if (h2>140){//ileri
  }
 
 
- else if (h2<90){//geri
+ else if (h2<90){//Backward
   ayar1=map(255-h2,140,255,0,255);
   if (h1>140){//sag geri
   ayar2=map(h1,0,255,0,128);
@@ -116,7 +126,7 @@ if (h2>140){//ileri
   analogWrite(sol1Motorg,h3/h4);
 //  Serial.println(ayar1);  
   }
-  else if (h1<90){//sol geri
+  else if (h1<90){//Backward+Left
   ayar2=map(255-h1,0,255,0,128);
   h3=ayar2+ayar1;
   if (h3>255){
@@ -136,7 +146,7 @@ if (h2>140){//ileri
 //  Serial.println(ayar1);  
   }
  }
-  else if(h2>90&&h2<140&&h1>140){//sag
+  else if(h2>90&&h2<140&&h1>140){//right
   ayar2=map(h1,140,255,0,255);
   h3=ayar2+ayar1;
   if (h3>255){
@@ -147,7 +157,7 @@ if (h2>140){//ileri
   analogWrite(sag1Motorg,0);
   analogWrite(sol1Motorg,ayar2/h4); 
   }
-  else if(h2>90&&h2<140&&h1<90){//sol
+  else if(h2>90&&h2<140&&h1<90){//left
   ayar2=map(255-h1,140,255,0,255);
   h3=ayar2+ayar1;
   if (h3>255){
@@ -166,6 +176,6 @@ if (h2>140){//ileri
  analogWrite(sol1Motori,0);
  analogWrite(sag1Motorg,0);
  analogWrite(sol1Motorg,0);
-// Serial.println("dur"); 
+// Serial.println("stop"); 
 }
 }
